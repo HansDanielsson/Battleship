@@ -9,21 +9,14 @@ public class EmptySea : Ship
         SetLength(1);
     }
 
-    public bool ShootAt(int row, int column)
-    {
-        return false;
-    }
+    public new bool ShootAt(int row, int column) => false;
 
-    public bool IsSunk()
-    {
-        return false;
-    }
+    public new bool IsSunk() => false;
 
     public override string ToString()
     {
         return "..";
     }
-
 
     public override string GetShipType()
     {

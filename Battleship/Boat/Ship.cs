@@ -10,33 +10,18 @@ public abstract class Ship
                                 // An "empty sea" location has length 1.
     private bool horizontal;    // True if the ship occupies a single row, false otherwise.
     // Ships will either be placed vertically or horizontally in the ocean.
-    private bool[] hit;         // This is a boolean array of size 8 that record hits.
+    private bool[]? hit;         // This is a boolean array of size 8 that record hits.
     // Only battleship use all the locations. The others will use fewer.
 
-    public int GetBowRow()
-    {
-        return bowRow;
-    }
+    public int GetBowRow() => bowRow;
 
-    public void SetBowRow(int bowRow)
-    {
-        this.bowRow = bowRow;
-    }
+    public void SetBowRow(int bowRow) => this.bowRow = bowRow;
 
-    public int GetBowColumn()
-    {
-        return bowColumn;
-    }
+    public int GetBowColumn() => bowColumn;
 
-    public void SetBowColumn(int bowColumn)
-    {
-        this.bowColumn = bowColumn;
-    }
+    public void SetBowColumn(int bowColumn) => this.bowColumn = bowColumn;
 
-    public int GetLength()
-    {
-        return length;
-    }
+    public int GetLength() => length;
 
     public void SetLength(int length)
     {
@@ -51,25 +36,13 @@ public abstract class Ship
         }
     }
 
-    public bool IsHorizontal()
-    {
-        return horizontal;
-    }
+    public bool IsHorizontal() => horizontal;
 
-    public void SetHorizontal(bool horizontal)
-    {
-        this.horizontal = horizontal;
-    }
+    public void SetHorizontal(bool horizontal) => this.horizontal = horizontal;
 
-    public bool GetHit(int i)
-    {
-        return hit[i];
-    }
+    public bool GetHit(int i) => hit![i];
 
-    public void SetHit(int i)
-    {
-        hit[i] = true;
-    }
+    public void SetHit(int i) => hit![i] = true;
 
     public abstract string GetShipType();
 
@@ -83,7 +56,7 @@ public abstract class Ship
         int x2 = row + 2;
         int y1 = column - 1;
         int y2 = column + 2;
-        int oceanLength = ocean.GetShipArray().Length;
+        int oceanLength = ocean.GetShipArray().GetLength(0);
         bool okPlace = true;
 
         if (horizontal)
@@ -157,7 +130,7 @@ public abstract class Ship
                 if (hitPos < length)
                 {
                     shoot = true;
-                    hit[hitPos] = true;
+                    hit![hitPos] = true;
                 }
             }
         }
@@ -167,7 +140,7 @@ public abstract class Ship
             if (hitPos < length)
             {
                 shoot = true;
-                hit[hitPos] = true;
+                hit![hitPos] = true;
             }
         }
         return shoot;
@@ -176,7 +149,7 @@ public abstract class Ship
     public bool IsSunk()
     {
         bool sunk = true;
-        for (int i = 0; i < hit.Length; i++)
+        for (int i = 0; i < hit!.Length; i++)
         {
             if (!hit[i])
             {
@@ -189,7 +162,7 @@ public abstract class Ship
     public override string ToString()
     {
         bool sunk = true;
-        for (int i = 0; i < hit.Length; i++)
+        for (int i = 0; i < hit!.Length; i++)
         {
             if (!hit[i])
             {

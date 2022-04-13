@@ -5,15 +5,15 @@ namespace Battleship.Sea;
 public class Ocean
 {
     private static Ship[,] ships = new Ship[20,20]; // Used to quickly determine which ship is in given location.
-    private static int shotsFired;                  // The total number of shots fired by the user.
-    private static int hitCount;                    // The number of times a shot hit a ship.
-    private static int shipsSunk;                   // The number of ships sunk.
+    private static ushort shotsFired;                  // The total number of shots fired by the user.
+    private static ushort hitCount;                    // The number of times a shot hit a ship.
+    private static ushort shipsSunk;                   // The number of ships sunk.
 
     public Ocean()
     {
-        for (int x = 0; x < ships.Length; x++)
+        for (ushort x = 0; x < ships.GetLength(0); x++)
         {
-            for (int y = 0; y < ships.Length; y++)
+            for (ushort y = 0; y < ships.GetLength(1); y++)
             {
                 ships[x,y] = new EmptySea();
             }
@@ -23,125 +23,76 @@ public class Ocean
         shipsSunk = 0;
     }
 
-    public void PlaceAllShipsRandomly()
+    public void PlaceShipOnOcean(byte forCounter, byte battleType)
     {
-        bool shiploop = true;
-        int forloop;
-        Random rn = new Random();
+        Ship battlePos;
+        Random rn = new();
         int row;
         int column;
-        bool horizontal = rn.Next(100) < 50;
-
-        // one 8-Battleship
-        BattleShips battleShipPos = new();
-        battleShipPos.SetHorizontal(horizontal);
-        while (shiploop)
+        bool shiploop;
+        bool horizontal;
+        for (byte forloop = 0; forloop < forCounter; forloop++)
         {
-            row = rn.Next(20);
-            column = rn.Next(20);
-            if (battleShipPos.OkToPlaceShipAt(row,column,horizontal, this)) {
-                ships[row,column] = battleShipPos;
-                battleShipPos.PlaceShipAt(row, column, horizontal, this);
-                shiploop = false;
+            shiploop = true;
+            horizontal = rn.Next(100) < 50;
+
+            switch (battleType)
+            {
+                case 0:
+                    battlePos = (BattleShips)new();
+                    break;
+                case 1:
+                    battlePos = (BattleCruiser)new();
+                    break;
+                case 2:
+                    battlePos = (Cruiser)new();
+                    break;
+                case 3:
+                    battlePos = (LightCruiser)new();
+                    break;
+                case 4:
+                    battlePos = (Destroyer)new();
+                    break;
+                default:
+                    battlePos = (Submarine)new();
+                    break;
+            }
+
+            battlePos.SetHorizontal(horizontal);
+            while (shiploop)
+            {
+                row = rn.Next(20);
+                column = rn.Next(20);
+                if (battlePos.OkToPlaceShipAt(row, column, horizontal, this))
+                {
+                    ships[row, column] = battlePos;
+                    battlePos.PlaceShipAt(row, column, horizontal, this);
+                    shiploop = false;
+                }
             }
         }
+    }
+
+    public void PlaceAllShipsRandomly()
+    {
+        
+        // one 8-Battleship
+        PlaceShipOnOcean(1,0);
 
         // one 7-Battle cruiser
-        shiploop = true;
-        horizontal = rn.Next(100) < 50;
-        BattleCruiser battleCruiserPos = new();
-        battleCruiserPos.SetHorizontal(horizontal);
-        while (shiploop)
-        {
-            row = rn.Next(20);
-            column = rn.Next(20);
-            if (battleCruiserPos.OkToPlaceShipAt(row,column, horizontal,this))
-            {
-                ships[row, column] = battleCruiserPos;
-                battleCruiserPos.PlaceShipAt(row, column, horizontal, this);
-                shiploop=false;
-            }
-        }
+        PlaceShipOnOcean(1, 1);
 
         // two 6-Cruisers
-        for (forloop = 0; forloop < 2; forloop++)
-        {
-            shiploop = true;
-            horizontal= rn.Next(100) < 50;
-            Cruiser cruiserPos = new();
-            cruiserPos.SetHorizontal(horizontal);
-            while (shiploop)
-            {
-                row = rn.Next(20);
-                column = rn.Next(20);
-                if (cruiserPos.OkToPlaceShipAt(row, column, horizontal, this))
-                {
-                    ships[row, column] = cruiserPos;
-                    cruiserPos.PlaceShipAt(row, column, horizontal, this);
-                    shiploop = false;
-                }
-            }
-        }
+        PlaceShipOnOcean(2, 2);
 
         // two 5-Light Cruisers
-        for (forloop = 0; forloop < 2; forloop++)
-        {
-            shiploop = true;
-            horizontal = rn.Next(100) < 50;
-            LightCruiser lightcruiserPos = new();
-            lightcruiserPos.SetHorizontal(horizontal);
-            while (shiploop)
-            {
-                row = rn.Next(20);
-                column = rn.Next(20);
-                if (lightcruiserPos.OkToPlaceShipAt(row, column, horizontal, this))
-                {
-                    ships[row, column] = lightcruiserPos;
-                    lightcruiserPos.PlaceShipAt(row, column, horizontal, this);
-                    shiploop = false;
-                }
-            }
-        }
+        PlaceShipOnOcean(2, 3);
 
         // three 4-Destroyers
-        for (forloop = 0; forloop < 3; forloop++)
-        {
-            shiploop = true;
-            horizontal = rn.Next(100) < 50;
-            Destroyer destroyerPos = new();
-            destroyerPos.SetHorizontal(horizontal);
-            while (shiploop)
-            {
-                row = rn.Next(20);
-                column = rn.Next(20);
-                if (destroyerPos.OkToPlaceShipAt(row, column, horizontal, this))
-                {
-                    ships[row, column] = destroyerPos;
-                    destroyerPos.PlaceShipAt(row, column, horizontal, this);
-                    shiploop = false;
-                }
-            }
-        }
+        PlaceShipOnOcean(3, 4);
 
         // four 3-Submarines
-        for (forloop = 0; forloop < 4; forloop++)
-        {
-            shiploop = true;
-            horizontal = rn.Next(100) < 50;
-            Submarine submarinePos = new();
-            submarinePos.SetHorizontal(horizontal);
-            while (shiploop)
-            {
-                row = rn.Next(20);
-                column = rn.Next(20);
-                if (submarinePos.OkToPlaceShipAt(row, column, horizontal, this))
-                {
-                    ships[row, column] = submarinePos;
-                    submarinePos.PlaceShipAt(row, column, horizontal, this);
-                    shiploop = false;
-                }
-            }
-        }
+        PlaceShipOnOcean(4, 5);
     }
 
 
@@ -149,16 +100,13 @@ public class Ocean
      *  Returns true if the given location contains a ship, false if it does not.
      */
 
-    public bool IsOccupied(int row, int column)
-    {
-        return ships[row,column].GetBowRow() != -1;
-    }
+    public bool IsOccupied(int row, int column) => ships[row, column].GetBowRow() != -1;
 
     /**
      *  Returns true if the given location contains a real ship, still afloat.
      */
 
-    public bool ShootAt(int row, int column)
+    public bool ShootAt(short row, short column)
     {
         bool shoot = false;
         int bowRow = ships[row,column].GetBowRow();
@@ -189,27 +137,18 @@ public class Ocean
         return shoot;
     }
 
-    public int GetShotsFired()
-    {
-        return shotsFired;
-    }
+    public int GetShotsFired() => shotsFired;
 
-    public int GetHitCount()
-    {
-        return hitCount;
-    }
+    public int GetHitCount() => hitCount;
 
-    public int GetShipsSunk()
-    {
-        return shipsSunk;
-    }
+    public int GetShipsSunk() => shipsSunk;
 
     public bool IsGameOver()
     {
         bool gameOver = true;
-        for (int i = 0; i < ships.Length; i++)
+        for (int i = 0; i < ships.GetLength(0); i++)
         {
-            for (int j = 0; j < ships.Length; j++)
+            for (int j = 0; j < ships.GetLength(1); j++)
             {
                 if (ships[i,j].GetBowRow() != -1)
                 {
@@ -220,28 +159,25 @@ public class Ocean
         return gameOver;
     }
 
-    public Ship[,] GetShipArray()
-    {
-        return ships;
-    }
+    public Ship[,] GetShipArray() => ships;
 
     public void Print()
     {
         int row, col;
-        Console.WriteLine(".....");
-        for (col = 0; col < ships.Length; col++)
+        Console.Write("..");
+        for (col = 0; col < ships.GetLength(1); col++)
         {
-            Console.WriteLine(col / 10);
-            Console.WriteLine(col % 10);
+            Console.Write(col / 10);
+            Console.Write(col % 10);
         }
-        Console.WriteLine("...");
-        for (row = 0; row < ships.Length; row++)
+        Console.WriteLine("..");
+        for (row = 0; row < ships.GetLength(0); row++)
         {
-            Console.WriteLine(row / 10);
-            Console.WriteLine(row % 10);
-            for (col = 0; col < ships.Length; col++)
+            Console.Write(row / 10);
+            Console.Write(row % 10);
+            for (col = 0; col < ships.GetLength(1); col++)
             {
-                Console.WriteLine(ships[row,col]);
+                Console.Write(ships[row,col]);
             }
             Console.WriteLine(" ");
         }

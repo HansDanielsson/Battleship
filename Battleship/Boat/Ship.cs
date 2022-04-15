@@ -51,7 +51,6 @@ public abstract class Ship
      */
     public bool OkToPlaceShipAt(int row, int column, bool horizontal, Ocean ocean)
     {
-        int x, y;
         int x1 = row - 1;
         int x2 = row + 2;
         int y1 = column - 1;
@@ -79,6 +78,7 @@ public abstract class Ship
         x2 = Math.Min(x2, oceanLength);
         y1 = Math.Max(y1, 0);
         y2 = Math.Min(y2, oceanLength);
+        int x, y;
         for (x = x1; x < x2; x++)
         {
             for (y = y1; y < y2; y++)
@@ -89,7 +89,6 @@ public abstract class Ship
                 }
             }
         }
-
         return okPlace;
     }
 
